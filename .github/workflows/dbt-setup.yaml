@@ -30,11 +30,11 @@ jobs:
 
       - name: Setup DBT
         run: |
-          echo "${{ inputs.DBT_PROJECT_DIR }}"
           echo "Install DBT"
           pip install dbt-bigquery==1.7.3
           dbt --version
           pwd
+          echo "${{ inputs.DBT_PROJECT_DIR }}"
           cd "${{ inputs.DBT_PROJECT_DIR }}"
           dbt deps
 

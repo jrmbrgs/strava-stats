@@ -18,7 +18,7 @@ jobs:
     with:
       env-name: "review"
       GCP_DBT_CI_SA_KEY_FILE: ./gcp_dbt_ci_sa.json
-      DBT_PROJECT_DIR: $DBT_PROJECT_DIR
+      DBT_PROJECT_DIR: ${{ env.DBT_PROJECT_DIR }}
     secrets:
       GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
 
