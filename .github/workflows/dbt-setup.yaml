@@ -6,12 +6,15 @@ on:
       env-name:
         required: true
         type: string
-      DBT_PROJECT_DIR:
+      env_vars:
         required: true
         type: string
-      GCP_DBT_CI_SA_KEY_FILE:
-        required: true
-        type: string
+      # DBT_PROJECT_DIR:
+      #   required: true
+      #   type: string
+      # GCP_DBT_CI_SA_KEY_FILE:
+      #   required: true
+      #   type: string
     secrets:
       GCP_DBT_CI_SA:
         required: true
@@ -34,8 +37,8 @@ jobs:
           pip install dbt-bigquery==1.7.3
           dbt --version
           pwd
-          echo "${{ inputs.DBT_PROJECT_DIR }}"
-          cd "${{ inputs.DBT_PROJECT_DIR }}"
+          echo "$DBT_PROJECT_DIR"
+          cd "$DBT_PROJECT_DIR"
           dbt deps
 
       - name: Setup Auth
@@ -43,4 +46,4 @@ jobs:
           GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
         run: |
           echo "Auth"
-          echo $GCP_DBT_CI_SA > ${{ inputs.GCP_DBT_CI_SA_KEY_FILE }}
+          echo $GCP_DBT_CI_SA > $GCP_DBT_CI_SA_KEY_FILE
