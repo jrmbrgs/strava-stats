@@ -17,6 +17,9 @@ jobs:
     uses: ./.github/workflows/dbt-setup.yml
     with:
       env-name: "review"
+      GCP_DBT_CI_SA_KEY_FILE: ./gcp_dbt_ci_sa.json
+    secrets:
+      GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
 
 
   dbt-deploy-review:

@@ -6,6 +6,12 @@ on:
       env-name:
         required: true
         type: string
+      GCP_DBT_CI_SA_KEY_FILE:
+        required: true
+        type: string
+    secrets:
+      GCP_DBT_CI_SA:
+        required: true
 
 jobs:
 
