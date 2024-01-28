@@ -1,4 +1,4 @@
-name: DBT CI Init
+name: DBT CI Init actions
 
 on:
   workflow_call:
