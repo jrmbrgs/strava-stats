@@ -40,6 +40,9 @@ jobs:
           pip install dbt-bigquery==1.7.3
           dbt --version
           pwd
+          ls -l
+          echo $DBT_PROJECT_DIR
+          ls $DBT_PROJECT_DIR
           cd $DBT_PROJECT_DIR
           dbt deps
 
