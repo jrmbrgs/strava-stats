@@ -1,0 +1,25 @@
+strava_dbt:
+  target: dev
+  outputs:
+    dev:
+      dataset: dbt_dev
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      keyfile: "{{ env_var('WS_DIR') }}/creds/dbt-dev-sa.json"
+      location: EU
+      method: service-account
+      priority: interactive
+      project: jbs-lab
+      threads: 4
+      type: bigquery
+    review:
+      dataset: dbt_review
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      keyfile: "{{ env_var('GCP_DBT_CI_SA_KEY_FILE') }}"
+      location: EU
+      method: service-account
+      priority: interactive
+      project: jbs-lab
+      threads: 4
+      type: bigquery
