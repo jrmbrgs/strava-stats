@@ -8,7 +8,7 @@ env:
   GCP_PROJECT_ID: jbs-lab
   GCP_DBT_CI_SA_KEY_FILE: ./gcp_dbt_ci_sa.json
   GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
-  DBT_PROFIL_DIR: ./strava_dbt
+  DBT_PROJECT_DIR: ./strava_dbt
 
 
 jobs:
@@ -18,6 +18,7 @@ jobs:
     with:
       env-name: "review"
       GCP_DBT_CI_SA_KEY_FILE: ./gcp_dbt_ci_sa.json
+      DBT_PROJECT_DIR: $DBT_PROJECT_DIR
     secrets:
       GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
 
@@ -35,10 +36,10 @@ jobs:
 
       - name: Run Dbt models
         run: |
-          cd $DBT_PROFIL_DIR
+          cd $DBT_PROJECT_DIR
           dbt run --target review --project-dir ./ --profiles-dir ./
 
       - name: Test Dbt models
         run: |
-          cd $DBT_PROFIL_DIR
+          cd $DBT_PROJECT_DIR
           dbt test --target review --project-dir ./ --profiles-dir ./
