@@ -24,7 +24,7 @@ jobs:
 
 
   dbt-deploy-review:
-    needs: init-env
+    # needs: init-env
     environment: review
     runs-on: ubuntu-latest
 
