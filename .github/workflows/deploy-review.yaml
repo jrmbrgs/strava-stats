@@ -14,6 +14,7 @@ env:
 jobs:
 
   dbt-deploy-review:
+    environment: review
     runs-on: ubuntu-latest
 
     steps:
@@ -23,6 +24,8 @@ jobs:
           python-version: "3.11.x"
 
       - name: Init Env
+        env:
+          GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
         run: |
           echo "Install DBT"
           pip install dbt-bigquery==1.7.3
