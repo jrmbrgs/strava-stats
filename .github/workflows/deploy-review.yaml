@@ -1,0 +1,46 @@
+name: DBT Review Deployment
+run-name: Deploying DBT in review env ${{ github.actor }} 🚀
+on:
+  pull_request:
+    types:
+      - opened
+    branches:
+      - main
+env:
+  GCP_PROJECT_ID: jbs-lab
+  GCP_DBT_CI_SA_KEY_FILE: ./gcp_dbt_ci_sa.json
+  GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
+  DBT_PROFIL_DIR: ./strava_dbt
+
+
+jobs:
+
+  dbt-deploy-review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v1
+        with:
+          python-version: "3.11.x"
+
+      - name: Init Env
+        run: |
+          echo "Install DBT"
+          pip install dbt-bigquery==1.7.3
+          dbt --version
+          cd $DBT_PROFIL_DIR
+          dbt deps
+          echo "Auth"
+          echo $GCP_DBT_CI_SA > $GCP_DBT_CI_SA_KEY_FILE
+          cat $GCP_DBT_CI_SA_KEY_FILE
+
+      - name: Run Dbt models
+        run: |
+          cd $DBT_PROFIL_DIR
+          dbt run --target review --project-dir ./ --profiles-dir ./
+
+      - name: Test Dbt models
+        run: |
+          cd $DBT_PROFIL_DIR
+          dbt test --target review --project-dir ./ --profiles-dir ./
