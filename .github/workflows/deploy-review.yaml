@@ -40,7 +40,7 @@ jobs:
           pip install dbt-bigquery==1.7.3
           dbt --version
           pwd
-          cd "$DBT_PROJECT_DIR"
+          cd $DBT_PROJECT_DIR
           dbt deps
 
       - name: Setup Auth
