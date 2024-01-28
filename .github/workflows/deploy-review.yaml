@@ -39,11 +39,6 @@ jobs:
           echo "Install DBT"
           pip install dbt-bigquery==1.7.3
           dbt --version
-          pwd
-          ls -l
-          echo $DBT_PROJECT_DIR
-          ls $DBT_PROJECT_DIR
-          cd $DBT_PROJECT_DIR
           dbt deps
 
       - name: Setup Auth
@@ -55,10 +50,8 @@ jobs:
 
       - name: Run Dbt models
         run: |
-          cd $DBT_PROJECT_DIR
           dbt run --target review --project-dir ./ --profiles-dir ./
 
       - name: Test Dbt models
         run: |
-          cd $DBT_PROJECT_DIR
           dbt test --target review --project-dir ./ --profiles-dir ./
