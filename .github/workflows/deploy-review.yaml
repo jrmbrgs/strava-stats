@@ -17,9 +17,8 @@ jobs:
     uses: jrmbrgs/strava-stats/.github/workflows/dbt-setup.yaml@dbt
     with:
       env-name: "review"
-      env_vars: |
-        GCP_DBT_CI_SA_KEY_FILE=$GCP_DBT_CI_SA_KEY_FILE
-        DBT_PROJECT_DIR=$DBT_PROJECT_DIR
+      GCP_DBT_CI_SA_KEY_FILE: ./gcp_dbt_ci_sa.json
+      DBT_PROJECT_DIR: ./strava_dbt
     secrets:
       GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
 
