@@ -14,7 +14,7 @@ env:
 jobs:
 
   init-env:
-    uses: ./.github/workflows/dbt-setup.yml
+    uses: jrmbrgs/strava-stats/.github/workflows/dbt-setup.yml@dbt
     with:
       env-name: "review"
       GCP_DBT_CI_SA_KEY_FILE: ./gcp_dbt_ci_sa.json
