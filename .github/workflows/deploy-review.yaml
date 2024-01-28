@@ -2,8 +2,6 @@ name: DBT Review Deployment
 run-name: Deploying DBT in review env ${{ github.actor }} 🚀
 on:
   pull_request:
-    types:
-      - opened
     branches:
       - main
 env:
