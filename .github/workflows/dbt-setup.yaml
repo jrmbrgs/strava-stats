@@ -1,0 +1,34 @@
+name: DBT CI Init
+
+on:
+  workflow_call:
+    inputs:
+      env-name:
+        required: true
+        type: string
+
+jobs:
+
+  init:
+    environment:  "${{ inputs.env-name }}"
+    name: "Init ${{ inputs.env-name }}"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v1
+        with:
+          python-version: "3.11.x"
+
+      - name: Setup DBT
+        run: |
+          echo "Install DBT"
+          pip install dbt-bigquery==1.7.3
+          dbt --version
+          cd $DBT_PROFIL_DIR
+          dbt deps
+
+      - name: Setup Auth
+        env:
+          GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
+        run: |
+          echo "Auth"
+          echo $GCP_DBT_CI_SA > $GCP_DBT_CI_SA_KEY_FILE

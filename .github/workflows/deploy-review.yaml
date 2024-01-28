@@ -13,7 +13,14 @@ env:
 
 jobs:
 
+  init-env:
+    uses: jrmbrgs/strava-stats/.github/workflows/dbt-setup.yml@dbt
+    with:
+      env-name: "review"
+
+
   dbt-deploy-review:
+    needs: init-env
     environment: review
     runs-on: ubuntu-latest
 
@@ -22,19 +29,6 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: "3.11.x"
-
-      - name: Init Env
-        env:
-          GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
-        run: |
-          echo "Install DBT"
-          pip install dbt-bigquery==1.7.3
-          dbt --version
-          cd $DBT_PROFIL_DIR
-          dbt deps
-          echo "Auth"
-          echo $GCP_DBT_CI_SA > $GCP_DBT_CI_SA_KEY_FILE
-          cat $GCP_DBT_CI_SA_KEY_FILE
 
       - name: Run Dbt models
         run: |
