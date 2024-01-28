@@ -14,7 +14,7 @@ env:
 jobs:
 
   init-env:
-    uses: .github/workflows/dbt-setup.yml@dbt
+    uses: ./.github/workflows/dbt-setup.yml@dbt
     with:
       env-name: "review"
 
