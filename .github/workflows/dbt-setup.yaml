@@ -6,7 +6,6 @@ on:
       env-name:
         required: true
         type: string
-      env_vars:
       DBT_PROJECT_DIR:
         required: true
         type: string
