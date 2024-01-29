@@ -1,0 +1,83 @@
+name: DBT Deploy
+
+on:
+  workflow_call:
+    inputs:
+      ENV_NAME:
+        required: true
+        type: string
+      DBT_PROFILE_TARGET:
+        required: true
+        type: string
+      DBT_PROJECT_PATH:
+        required: true
+        type: string
+      GCP_DBT_CI_SA_KEY_FILE:
+        required: true
+        type: string
+    secrets:
+      GCP_DBT_CI_SA:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Setup DBT + Piperider
+      run: |
+        pip install dbt-bigquery
+        pip install piperider['bigquery']
+
+    - name: Run DBT on PR environment
+      run: |
+        cd "${{ inputs.DBT_PROJECT_PATH }}"
+        dbt build --target ${{ inputs.DBT_PROFILE_TARGET }}
+
+    - name: Profile on PR environment
+      run: |
+        cd "${{ inputs.DBT_PROJECT_PATH }}"
+        piperider run --dbt-target ${{ inputs.DBT_PROFILE_TARGET }} --dbt-state target -o /tmp/pr-report/
+
+    - name: Profile on PROD environment
+      run: |
+        cd "${{ inputs.DBT_PROJECT_PATH }}"
+        piperider run --dbt-target ${{ inputs.DBT_PROFILE_TARGET }} -o /tmp/prod-report/
+
+    - name: Compare and Prepare
+      run: |
+        cd "${{ inputs.DBT_PROJECT_PATH }}"
+        piperider compare-reports \
+          --debug \
+          --base /tmp/prod-report/run.json \
+          --target /tmp/pr-report/run.json \
+          --output comparison-report/ \
+          --tables-from target-only
+        zip -r comparison-report.zip comparison-report/
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: comparison-report-artifact
+        path: comparison-report.zip
+
+    - name: Prepare Comparison Summary
+      run: |
+        cd "${{ inputs.DBT_PROJECT_PATH }}"
+        echo "# :bar_chart: Piperider Comparison Summary" > summary.md
+        cat comparison-report/summary.md >> summary.md
+        echo -e "\n" >> summary.md
+        echo "## :paperclip: Generated Comparison Report ZIP" >> summary.md
+        echo "Find it in the [Github Action Runs Page](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> summary.md
+
+    - name: Create PR Comment
+      uses: peter-evans/create-or-update-comment@v2.1.0
+      with:
+        issue-number: ${{ github.event.number }}
+        body-file: summary.md

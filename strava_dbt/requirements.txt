@@ -1,2 +1,0 @@
-dbt-bigquery~=1.7.3
-piperider[bigquery]~=0.41.0
