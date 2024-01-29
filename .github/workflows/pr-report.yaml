@@ -1,11 +1,8 @@
-name: DBT Deploy
+name: DBT PR Report
 
 on:
   workflow_call:
     inputs:
-      ENV_NAME:
-        required: true
-        type: string
       DBT_PROFILE_TARGET:
         required: true
         type: string
