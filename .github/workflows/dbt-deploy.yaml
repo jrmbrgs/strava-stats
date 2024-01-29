@@ -1,12 +1,12 @@
-name: DBT CI Init actions
+name: DBT Deploy
 
 on:
   workflow_call:
     inputs:
-      env-name:
+      ENV_NAME:
         required: true
         type: string
-      DBT_PROJECT_DIR:
+      DBT_PROJECT_PATH:
         required: true
         type: string
       GCP_DBT_CI_SA_KEY_FILE:
@@ -18,10 +18,11 @@ on:
 
 jobs:
 
-  init:
-    environment:  "${{ inputs.env-name }}"
-    name: "Init ${{ inputs.env-name }}"
+ dbt-deploy:
     runs-on: ubuntu-latest
+    environment:  "${{ inputs.ENV_NAME }}"
+    name: "DBT deploy ${{ inputs.ENV_NAME }}"
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v1
@@ -34,8 +35,7 @@ jobs:
           pip install dbt-bigquery==1.7.3
           dbt --version
           pwd
-          echo "${{ inputs.DBT_PROJECT_DIR }}"
-          cd "${{ inputs.DBT_PROJECT_DIR }}"
+          cd "${{ inputs.DBT_PROJECT_PATH }}"
           dbt deps
 
       - name: Setup Auth
@@ -43,4 +43,18 @@ jobs:
           GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
         run: |
           echo "Auth"
+          pwd
+          cd "${{ inputs.DBT_PROJECT_PATH }}"
           echo $GCP_DBT_CI_SA > ${{ inputs.GCP_DBT_CI_SA_KEY_FILE }}
+
+      - name: Run Dbt models
+        run: |
+          pwd
+          cd "${{ inputs.DBT_PROJECT_PATH }}"
+          dbt run --target review --project-dir ./ --profiles-dir ./
+
+      - name: Test Dbt models
+        run: |
+          pwd
+          cd "${{ inputs.DBT_PROJECT_PATH }}"
+          dbt test --target review --project-dir ./ --profiles-dir ./

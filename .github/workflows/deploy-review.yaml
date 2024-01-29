@@ -12,51 +12,11 @@ env:
 
 
 jobs:
-
-  # init-env:
-  #   uses: jrmbrgs/strava-stats/.github/workflows/dbt-setup.yaml@dbt
-  #   with:
-  #     env-name: "review"
-  #     GCP_DBT_CI_SA_KEY_FILE: ./gcp_dbt_ci_sa.json
-  #     DBT_PROJECT_DIR: ./strava_dbt
-  #   secrets:
-  #     GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
-
-
   dbt-deploy-review:
-    # needs: init-env
-    environment: review
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v1
-        with:
-          python-version: "3.11.x"
-
-      - name: Setup DBT
-        run: |
-          echo "Install DBT"
-          pip install dbt-bigquery==1.7.3
-          dbt --version
-          pwd
-          cd $DBT_PROJECT_PATH
-          dbt deps
-
-      - name: Setup Auth
-        env:
-          GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
-        run: |
-          echo "Auth"
-          cd $DBT_PROJECT_PATH
-          echo $GCP_DBT_CI_SA > $GCP_DBT_CI_SA_KEY_FILE
-
-      - name: Run Dbt models
-        run: |
-          cd $DBT_PROJECT_PATH
-          dbt run --target review --project-dir ./ --profiles-dir ./
-
-      - name: Test Dbt models
-        run: |
-          cd $DBT_PROJECT_PATH
-          dbt test --target review --project-dir ./ --profiles-dir ./
+    uses: jrmbrgs/strava-stats/.github/workflows/dbt-deploy.yaml@dbt
+    with:
+      ENV_NAME: "review"
+      GCP_DBT_CI_SA_KEY_FILE: ./gcp_dbt_ci_sa.json
+      DBT_PROJECT_PATH: ./strava_dbt
+    secrets:
+      GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
