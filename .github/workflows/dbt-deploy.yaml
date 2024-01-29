@@ -45,6 +45,14 @@ jobs:
           cd "${{ inputs.DBT_PROJECT_PATH }}"
           echo $GCP_DBT_CI_SA > ${{ inputs.GCP_DBT_CI_SA_KEY_FILE }}
 
+      - name: Build Dbt models
+        env:
+          GCP_DBT_CI_SA_KEY_FILE: ${{ inputs.GCP_DBT_CI_SA_KEY_FILE }}
+        run: |
+          pwd
+          cd "${{ inputs.DBT_PROJECT_PATH }}"
+          dbt build --target review --project-dir ./ --profiles-dir ./
+
       - name: Run Dbt models
         env:
           GCP_DBT_CI_SA_KEY_FILE: ${{ inputs.GCP_DBT_CI_SA_KEY_FILE }}
