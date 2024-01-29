@@ -31,7 +31,6 @@ jobs:
 
       - name: Setup DBT
         run: |
-          echo "Install DBT"
           pip install dbt-bigquery==1.7.3
           dbt --version
           pwd
@@ -42,18 +41,21 @@ jobs:
         env:
           GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
         run: |
-          echo "Auth"
           pwd
           cd "${{ inputs.DBT_PROJECT_PATH }}"
           echo $GCP_DBT_CI_SA > ${{ inputs.GCP_DBT_CI_SA_KEY_FILE }}
 
       - name: Run Dbt models
+        env:
+          GCP_DBT_CI_SA_KEY_FILE: ${{ inputs.GCP_DBT_CI_SA_KEY_FILE }}
         run: |
           pwd
           cd "${{ inputs.DBT_PROJECT_PATH }}"
           dbt run --target review --project-dir ./ --profiles-dir ./
 
       - name: Test Dbt models
+        env:
+          GCP_DBT_CI_SA_KEY_FILE: ${{ inputs.GCP_DBT_CI_SA_KEY_FILE }}
         run: |
           pwd
           cd "${{ inputs.DBT_PROJECT_PATH }}"
