@@ -35,7 +35,7 @@ jobs:
 
     - name: Run DBT on PR environment
       env:
-        GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
+        GCP_DBT_CI_SA_KEY_FILE: ${{ inputs.GCP_DBT_CI_SA_KEY_FILE }}
       run: |
         cd "${{ inputs.DBT_PROJECT_PATH }}"
         dbt build --target ${{ inputs.DBT_PROFILE_TARGET }}
