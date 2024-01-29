@@ -13,7 +13,7 @@ env:
 
 jobs:
   piperider-compare:
-    uses: jrmbrgs/strava-stats/.github/workflows/dbt-deploy.yaml@ci-init
+    uses: jrmbrgs/strava-stats/.github/workflows/pr-report.yaml@ci-init
     with:
       GCP_DBT_CI_SA_KEY_FILE: ./gcp_dbt_ci_sa.json
       DBT_PROFILE_TARGET: review
