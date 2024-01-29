@@ -34,6 +34,8 @@ jobs:
         pip install piperider['bigquery']
 
     - name: Run DBT on PR environment
+      env:
+        GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
       run: |
         cd "${{ inputs.DBT_PROJECT_PATH }}"
         dbt build --target ${{ inputs.DBT_PROFILE_TARGET }}
