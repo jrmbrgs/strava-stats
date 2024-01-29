@@ -18,6 +18,8 @@ jobs:
       GCP_DBT_CI_SA_KEY_FILE: ./gcp_dbt_ci_sa.json
       DBT_PROFILE_TARGET: review
       DBT_PROJECT_PATH: ./strava_dbt
+    secrets:
+      GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
 
   dbt-deploy-review:
     needs: piperider-compare
