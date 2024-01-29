@@ -1,0 +1,32 @@
+name: DBT Review Deployment
+run-name: Deploying DBT in review env ${{ github.actor }} 🚀
+on:
+  pull_request:
+    branches:
+      - main
+env:
+  GCP_PROJECT_ID: jbs-lab
+  GCP_DBT_CI_SA_KEY_FILE: ./gcp_dbt_ci_sa.json
+  GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
+  DBT_PROJECT_PATH: ./strava_dbt
+
+
+jobs:
+  piperider-compare:
+    uses: jrmbrgs/strava-stats/.github/workflows/pr-report.yaml@ci-init
+    with:
+      GCP_DBT_CI_SA_KEY_FILE: ./gcp_dbt_ci_sa.json
+      DBT_PROFILE_TARGET: review
+      DBT_PROJECT_PATH: ./strava_dbt
+    secrets:
+      GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
+
+  dbt-deploy-review:
+    needs: piperider-compare
+    uses: jrmbrgs/strava-stats/.github/workflows/dbt-deploy.yaml@ci-init
+    with:
+      ENV_NAME: "review"
+      GCP_DBT_CI_SA_KEY_FILE: ./gcp_dbt_ci_sa.json
+      DBT_PROJECT_PATH: ./strava_dbt
+    secrets:
+      GCP_DBT_CI_SA: ${{ secrets.GCP_DBT_CI_SA }}
