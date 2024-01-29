@@ -22,8 +22,11 @@ jobs:
 
     - name: PipeRider Compare
       uses: InfuseAI/piperider-compare-action@v1
+      with:
+        working_directory: ./strava_dbt
 
   dbt-deploy-review:
+    needs: piperider-compare
     uses: jrmbrgs/strava-stats/.github/workflows/dbt-deploy.yaml@dbt
     with:
       ENV_NAME: "review"
