@@ -19,10 +19,6 @@ jobs:
       pull-requests: write
     steps:
     - uses: actions/checkout@v3
-    - name: Setup PipeRider
-      run: |
-        pip install -U 'piperider[bigquery]'
-
     - name: PipeRider Compare
       uses: InfuseAI/piperider-compare-action@v1
       with:
